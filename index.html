@@ -17,35 +17,110 @@
 <body>
 <div class="wrap">
 <header class="brand"><div class="logo">⇩</div><div><h1>ViraDownload</h1><p>Seus links organizados em um só lugar</p></div></header>
-<section class="hero"><span class="badge">● SIMPLES · RÁPIDO · RESPONSIVO</span><h2>Seu vídeo.<br><span>Do seu jeito.</span></h2><p>Cole um link para abrir a publicação ou tentar baixar um arquivo de vídeo direto compatível.</p></section>
+<section class="hero"><span class="badge">● SIMPLES · RÁPIDO · RESPONSIVO</span><h2>Seu vídeo.<br><span>Do seu jeito.</span></h2><p>Cole links do Instagram, Facebook ou WhatsApp. O app identifica a plataforma e baixa arquivos de vídeo diretos quando o servidor permite.</p></section>
 <main class="card">
 <label class="label" for="videoUrl">Link do vídeo</label>
-<div class="inputrow"><input id="videoUrl" type="url" inputmode="url" placeholder="Cole o link aqui..." autocomplete="url"><button class="paste" id="pasteBtn" type="button">📋 Colar</button></div>
-<button class="primary" id="openBtn" type="button">↗ Abrir link / tentar baixar</button>
-<div class="platforms"><div class="platform"><b>◎</b>Instagram</div><div class="platform"><b>f</b>Facebook</div><div class="platform"><b>▶</b>WhatsApp / vídeo</div></div>
-<div class="note">🔒 Use links e vídeos aos quais você tem acesso e permissão para salvar. Páginas de redes sociais normalmente não são arquivos de vídeo diretos; este HTML não contorna logins, privacidade ou restrições das plataformas.</div>
+<div class="inputrow"><input id="videoUrl" type="url" inputmode="url" placeholder="Cole o link do Instagram, Facebook ou WhatsApp..." autocomplete="url" aria-describedby="urlHelp"><button class="paste" id="pasteBtn" type="button">📋 Colar</button></div>
+<div id="urlHelp" class="status" style="color:var(--muted);margin-top:8px">Aceita links de publicações e links diretos para arquivos .mp4, .webm, .mov e similares.</div><button class="primary" id="openBtn" type="button">⬇️ Detectar e continuar</button>
+<div class="platforms"><div class="platform" id="igPlatform"><b>◎</b>Instagram</div><div class="platform" id="fbPlatform"><b>f</b>Facebook</div><div class="platform" id="waPlatform"><b>▶</b>WhatsApp</div></div>
+<div class="note">🔒 Baixe apenas vídeos que você tem permissão para salvar. Links de publicações do Instagram/Facebook e links de compartilhamento do WhatsApp não expõem necessariamente o arquivo de vídeo. Por segurança, este app não contorna logins, privacidade nem restrições das plataformas; para esses links, ele abre a publicação original.</div>
 <div class="status" id="status" role="status" aria-live="polite"></div>
 <section class="history"><div class="history-head"><h3>🕘 Histórico recente</h3><button class="secondary" id="clearBtn" type="button">Limpar</button></div><div class="history-list" id="historyList"></div></section>
 </main>
 <section class="section"><h3>Como usar</h3><div class="items">
 <div class="item"><div class="ico">📋</div><div><strong>1. Copie o link</strong><small>Use a opção Compartilhar/Copiar link no aplicativo de origem.</small></div></div>
 <div class="item"><div class="ico">🔗</div><div><strong>2. Cole aqui</strong><small>Toque em “Colar” ou cole o endereço no campo.</small></div></div>
-<div class="item"><div class="ico">⬇️</div><div><strong>3. Abra ou baixe</strong><small>Links diretos de arquivos de vídeo podem ser baixados se o servidor permitir.</small></div></div>
+<div class="item"><div class="ico">⬇️</div><div><strong>3. Abra ou baixe</strong><small>Arquivos diretos podem ser baixados. Em links de publicações, use as opções oficiais da plataforma ou um arquivo de mídia que você tenha salvo e possa acessar.</small></div></div>
 </div></section>
 <footer class="footer">ViraDownload — protótipo HTML independente.<br>Não é afiliado ao Instagram, Facebook ou WhatsApp.</footer>
 </div>
 <script>
 const input=document.getElementById('videoUrl'), statusBox=document.getElementById('status'), list=document.getElementById('historyList');
-const KEY='viradownload_history_v1';
+const KEY='viradownload_history_v2';
 function getHistory(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}}
 function setStatus(t){statusBox.textContent=t}
 function validUrl(s){try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)?u:null}catch{return null}}
-function render(){const h=getHistory();list.innerHTML='';if(!h.length){list.innerHTML='<div class="history-entry">Seus links recentes aparecerão aqui neste dispositivo.</div>';return}h.forEach((item,i)=>{const d=document.createElement('div');d.className='history-entry';const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=item.url;const small=document.createElement('div');small.textContent=item.date;d.append(a,small);list.append(d)})}
-function save(u){let h=getHistory().filter(x=>x.url!==u.href);h.unshift({url:u.href,date:new Date().toLocaleString('pt-BR')});localStorage.setItem(KEY,JSON.stringify(h.slice(0,10)));render()}
-document.getElementById('pasteBtn').addEventListener('click',async()=>{try{if(!navigator.clipboard?.readText)throw new Error();input.value=await navigator.clipboard.readText();setStatus('Link colado. Toque no botão para continuar.')}catch{input.focus();setStatus('Não foi possível acessar a área de transferência. Toque no campo e escolha “Colar”.')}});
-document.getElementById('openBtn').addEventListener('click',()=>{const u=validUrl(input.value.trim());if(!u){setStatus('Cole um link válido começando com https:// ou http://.');return}save(u);const direct=/\.(mp4|webm|mov|m4v|ogv)(\?.*)?$/i.test(u.pathname+u.search);if(direct){const a=document.createElement('a');a.href=u.href;a.download='video';a.rel='noopener';document.body.append(a);a.click();a.remove();setStatus('Tentativa de download iniciada. Se o servidor bloquear o download, o link pode abrir no navegador.')}else{window.open(u.href,'_blank','noopener,noreferrer');setStatus('Link aberto em outra aba. Se for uma página de rede social, este protótipo não extrai o vídeo automaticamente.')}})
-document.getElementById('clearBtn').addEventListener('click',()=>{localStorage.removeItem(KEY);render();setStatus('Histórico apagado deste dispositivo.')});
-input.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('openBtn').click()});render();
+function platformFor(u){
+  const h=u.hostname.toLowerCase().replace(/^www\./,'');
+  if(h==='instagram.com'||h.endsWith('.instagram.com')||h==='instagr.am'||h.endsWith('.instagr.am')) return 'instagram';
+  if(h==='facebook.com'||h.endsWith('.facebook.com')||h==='fb.watch'||h.endsWith('.fb.watch')||h==='m.me'||h.endsWith('.m.me')) return 'facebook';
+  if(h==='whatsapp.com'||h.endsWith('.whatsapp.com')||h==='wa.me'||h.endsWith('.wa.me')||h==='whatsapp.net'||h.endsWith('.whatsapp.net')) return 'whatsapp';
+  return 'other';
+}
+function setPlatformHighlight(platform){
+  for(const id of ['igPlatform','fbPlatform','waPlatform']){
+    const el=document.getElementById(id);
+    el.style.borderColor='var(--line)';
+    el.style.background='#11182a';
+  }
+  const map={instagram:'igPlatform',facebook:'fbPlatform',whatsapp:'waPlatform'};
+  if(map[platform]){
+    const el=document.getElementById(map[platform]);
+    el.style.borderColor='var(--accent)';
+    el.style.background='#252044';
+  }
+}
+function render(){
+  const h=getHistory();list.innerHTML='';
+  if(!h.length){list.innerHTML='<div class="history-entry">Seus links recentes aparecerão aqui neste dispositivo.</div>';return}
+  h.forEach(item=>{
+    const d=document.createElement('div');d.className='history-entry';
+    const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=item.url;
+    const small=document.createElement('div');small.textContent=(item.platform?item.platform+' · ':'')+item.date;
+    d.append(a,small);list.append(d);
+  });
+}
+function save(u,platform){
+  try{
+    let h=getHistory().filter(x=>x.url!==u.href);
+    h.unshift({url:u.href,platform,date:new Date().toLocaleString('pt-BR')});
+    localStorage.setItem(KEY,JSON.stringify(h.slice(0,10)));
+    render();
+  }catch{setStatus('O link será processado, mas o navegador não permitiu salvar o histórico.')}
+}
+document.getElementById('pasteBtn').addEventListener('click',async()=>{
+  try{
+    if(!navigator.clipboard?.readText)throw new Error();
+    input.value=await navigator.clipboard.readText();
+    setStatus('Link colado. Toque em “Detectar e continuar”.');
+    const u=validUrl(input.value.trim());if(u)setPlatformHighlight(platformFor(u));
+  }catch{
+    input.focus();
+    setStatus('Não foi possível acessar a área de transferência. Toque no campo e escolha “Colar”.');
+  }
+});
+input.addEventListener('input',()=>{
+  const u=validUrl(input.value.trim());
+  setPlatformHighlight(u?platformFor(u):'other');
+});
+document.getElementById('openBtn').addEventListener('click',()=>{
+  const u=validUrl(input.value.trim());
+  if(!u){setStatus('Cole um link válido começando com https:// ou http://.');return}
+  const platform=platformFor(u);
+  setPlatformHighlight(platform);
+  save(u,platform==='other'?'Outro link':({instagram:'Instagram',facebook:'Facebook',whatsapp:'WhatsApp'}[platform]));
+  const direct=/\.(mp4|webm|mov|m4v|ogv|mkv)(\?.*)?$/i.test(u.pathname+u.search);
+  if(direct){
+    const a=document.createElement('a');
+    a.href=u.href;a.download='video';a.rel='noopener';
+    document.body.append(a);a.click();a.remove();
+    setStatus('Link direto de vídeo detectado. O download foi solicitado; se o servidor bloquear ou abrir o vídeo no navegador, use a opção de salvar do próprio navegador.');
+    return;
+  }
+  const messages={
+    instagram:'Link do Instagram detectado. Abrindo a publicação. O navegador não consegue extrair o arquivo de vídeo de forma confiável sem acesso autorizado da plataforma.',
+    facebook:'Link do Facebook detectado. Abrindo a publicação. Se o vídeo for seu, use as opções de download/exportação oferecidas pelo Facebook quando disponíveis.',
+    whatsapp:'Link do WhatsApp detectado. Abrindo o link original. Links de convite/compartilhamento não são arquivos de vídeo; para baixar uma mídia, use a opção de salvar no WhatsApp ou um link direto de arquivo acessível.',
+    other:'Este não parece ser um link reconhecido do Instagram, Facebook ou WhatsApp. Abrindo o endereço; links diretos de vídeo podem ser baixados.'
+  };
+  setStatus(messages[platform]);
+  window.open(u.href,'_blank','noopener,noreferrer');
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  localStorage.removeItem(KEY);render();setStatus('Histórico apagado deste dispositivo.');
+});
+input.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('openBtn').click()});
+render();
 </script>
 </body>
 </html>
