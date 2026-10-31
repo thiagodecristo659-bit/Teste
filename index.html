@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#100d20"><meta name="description" content="VideoSave Online: identifique links, acesse plataformas e salve arquivos de vídeo autorizados.">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css"><title>VideoSave Online</title>
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+  <a class="brand" href="./" aria-label="VideoSave início"><span class="brand-mark">▶</span><span><b>VideoSave</b><small>ONLINE VIDEO HUB</small></span></a>
+  <button class="icon-btn" id="installBtn" hidden title="Instalar aplicativo">＋</button>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow"><span class="pulse"></span> SEU CENTRO DE VÍDEOS ONLINE</div>
+    <h1>Seus vídeos.<br><em>Um só lugar.</em></h1>
+    <p>Identifique links, abra suas plataformas favoritas e salve arquivos de vídeo que estejam disponíveis para download.</p>
+  </section>
+
+  <section class="panel input-panel" aria-labelledby="linkTitle">
+    <div class="panel-heading"><div><span class="step">01</span><h2 id="linkTitle">Cole o link do vídeo</h2></div><span class="secure">● PRIVADO NO SEU NAVEGADOR</span></div>
+    <label class="sr-only" for="videoUrl">Link do vídeo</label>
+    <div class="url-box"><input id="videoUrl" type="url" inputmode="url" placeholder="https://cole-seu-link-aqui..." autocomplete="url"><button id="pasteBtn" class="paste-btn" type="button">Colar</button></div>
+    <button id="analyzeBtn" class="primary-btn" type="button"><span>✦</span> Analisar link <span class="arrow">→</span></button>
+    <p class="microcopy">Não pedimos sua senha nem armazenamos os links em servidores.</p>
+    <div id="result" class="result" hidden aria-live="polite"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div><span class="step">02</span><h2>Acesso rápido</h2></div><span class="muted">ABRIR PLATAFORMA</span></div>
+    <div class="platform-grid">
+      <a class="platform-card yt" href="https://www.youtube.com/" target="_blank" rel="noopener"><span class="platform-icon">▶</span><b>YouTube</b><small>Vídeos e Shorts</small><span class="card-arrow">↗</span></a>
+      <a class="platform-card fb" href="https://www.facebook.com/" target="_blank" rel="noopener"><span class="platform-icon">f</span><b>Facebook</b><small>Vídeos e publicações</small><span class="card-arrow">↗</span></a>
+      <a class="platform-card wa" href="https://web.whatsapp.com/" target="_blank" rel="noopener"><span class="platform-icon">◉</span><b>WhatsApp Web</b><small>Conversas e mídias</small><span class="card-arrow">↗</span></a>
+    </div>
+  </section>
+
+  <section class="panel guide-panel">
+    <div class="section-title"><div><span class="step">03</span><h2>Como salvar um vídeo</h2></div></div>
+    <div class="guide-list">
+      <div><span>1</span><p><b>Identifique a origem</b><small>Cole o link e toque em Analisar link.</small></p></div>
+      <div><span>2</span><p><b>Abra a plataforma</b><small>Use as opções oficiais de compartilhamento ou download.</small></p></div>
+      <div><span>3</span><p><b>Salve no aparelho</b><small>Quando houver um arquivo direto autorizado, use o botão de download.</small></p></div>
+    </div>
+  </section>
+
+  <section class="panel history-panel">
+    <div class="section-title"><div><span class="step">04</span><h2>Links recentes</h2></div><button id="clearHistory" class="text-btn" type="button">Limpar</button></div>
+    <div id="history" class="history-empty">Seus links recentes aparecerão aqui neste dispositivo.</div>
+  </section>
+
+  <aside class="notice"><span>ⓘ</span><p><b>Downloads com responsabilidade</b><br>O VideoSave não remove proteções nem extrai vídeos de plataformas. WhatsApp, Facebook e YouTube controlam como seus conteúdos podem ser salvos. Baixe apenas arquivos próprios ou autorizados e use os recursos oficiais de cada serviço.</p></aside>
+</main>
+<footer><span class="brand-mini">▶ VIDEOSAVE</span><span>ONLINE • VERSÃO 1.0</span></footer>
+</div>
+<script src="./app.js"></script>
+</body></html>
